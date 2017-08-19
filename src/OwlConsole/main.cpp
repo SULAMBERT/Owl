@@ -3,6 +3,7 @@
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QStandardPaths>
 #include "Core.h"
 #include "OwlConsole.h"
 #include <Utils/OwlUtils.h>
@@ -24,6 +25,26 @@ std::unique_ptr<QCommandLineParser> createCommandLineParser()
     return parser;
 }
 
+void loadSettings()
+{
+    const QString homeFolder = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    qDebug() << "homeFolder: " << homeFolder;
+
+    const QString settingsFile = homeFolder + QDir::separator() + ".owlcconfig";
+    const QFileInfo fileinfo { settingsFile };
+    if (!fileinfo.exists())
+    {
+        QSettings settings(settingsFile, QSettings::IniFormat);
+        settings.setValue("editor/executable", "vim");
+    }
+    else
+    {
+        QSettings settings(settingsFile, QSettings::IniFormat);
+        QString parsersFolder = settings.value("parsers/folder").toString();
+        QString disabledParsers = settings.value("parsers/disabled").toString();
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -31,6 +52,8 @@ int main(int argc, char *argv[])
     a.setOrganizationName(QStringLiteral(ORGANIZATION_NAME));
     a.setOrganizationDomain(QStringLiteral(ORGANZATION_DOMAIN));
     a.setApplicationVersion(QStringLiteral(OWLCONSOLE_VERSION));
+
+    loadSettings();
 
     auto parser = createCommandLineParser();
     parser->process(a);

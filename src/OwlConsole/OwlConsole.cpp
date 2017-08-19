@@ -269,6 +269,12 @@ void ConsoleApp::doLogin(const QString& options)
                     break;
                 }
             }
+            catch (const owl::WebException& ex)
+            {
+                qDebug() << ex.details();
+                parser.reset();
+            }
+
             catch (const owl::OwlException& ex)
             {
                 qDebug() << "Parser " << name << " failed: " << ex.details();
@@ -327,7 +333,7 @@ void ConsoleApp::doLogin(const QString& options)
     }
     else
     {
-        ERROR("Could not find a paser for board '" + boardUrl + "'");
+        ERROR("Could not connect to '" + boardUrl + "'");
     }
 }
 

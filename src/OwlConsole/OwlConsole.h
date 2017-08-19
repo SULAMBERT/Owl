@@ -202,17 +202,16 @@ public:
     const QString prompt() const
     {
         QString prompt;
-        QString path;
+
 
         if (_hostBit.size() > 0)
         {
-            path.clear();
+            QString path;
 
-            std::for_each(_location.forums.rbegin(), _location.forums.rend(),
-                [&path, this](const Location::Info& info)
-                {
-                    path.append(QStringLiteral("/") + info.second);
-                });
+            if (_location.forums.size() > 0)
+            {
+                path.append(_location.forums.front().second);
+            }
 
             if (path.isEmpty())
             {
