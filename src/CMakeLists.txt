@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 include(CMakeForceCompiler)
 
-project(OwlReader)
+project(Owl)
 set(OWL_VERSION "0.7.7")
 
 # Add our own custom CMake modules
@@ -29,8 +29,9 @@ set(LOG4QtT_FOLDER "" CACHE PATH "Log4Qt Folder")
 mark_as_advanced(LOG4QtT_FOLDER)
 
 # configure optional projects
+option(BUILD_GUI "Build Owl GUI (default ON)" ON)
+option(BUILD_CONSOLE "Optionally build OwlConsole project (default OFF)" OFF)
 option(BUILD_TEST "Optionally build OwlTests unit test project (default OFF)" OFF)
-option(BUILD_CONSOLE "Optionally build OwlConsol project (default OFF)" OFF)
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
@@ -177,14 +178,16 @@ include_directories(${CMAKE_BINARY_DIR})
 set(OWL_PARSERS_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../parsers")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-add_subdirectory(Owl)
 add_subdirectory(Parsers)
 add_subdirectory(Utils)
+
+if (BUILD_GUI)
+    add_subdirectory(Owl)
+endif(BUILD_GUI)
 
 if (BUILD_CONSOLE)
     add_subdirectory(OwlConsole)
 endif(BUILD_CONSOLE)
-
 
 if (BUILD_TEST)
     enable_testing()
